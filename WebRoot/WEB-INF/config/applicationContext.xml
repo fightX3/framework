@@ -22,4 +22,7 @@
 	
 	<!--获取运行时的springcontext -->
 	<bean id="springContextHolder" class="com.utils.SpringContextHolder"/> 
+	<context:property-placeholder location="/WEB-INF/config/hibernate.properties"/>
+	
+	
 </beans>

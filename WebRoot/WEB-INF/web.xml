@@ -19,7 +19,7 @@
 	<!-- 指定Spring Bean的配置文件所在目录。默认配置在WEB-INF目录下 -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/config/applicationContext.xml</param-value>
+		<param-value>/WEB-INF/config/applicationContext.xml,/WEB-INF/config/applicationContext-Hibernate.xml</param-value>
 	</context-param>
 	<listener>
 		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
@@ -61,5 +61,20 @@
 		<servlet-name>springmvc</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
-
+	<servlet>
+	    <servlet-name>DruidStatView</servlet-name>
+	    <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+       	<init-param>
+	        <param-name>allow</param-name>
+	        <param-value>127.0.0.1</param-value>
+	    </init-param>
+	    <init-param>
+	        <param-name>deny</param-name>
+	        <param-value>128.242.127.4</param-value>
+	    </init-param>
+  	</servlet>
+  	<servlet-mapping>
+	    <servlet-name>DruidStatView</servlet-name>
+	    <url-pattern>/druid/*</url-pattern>
+  	</servlet-mapping>
 </web-app>
