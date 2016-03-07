@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+	updateCheck="false">
+	<!-- 缓存到硬盘的路径  
+		操作系统不同 这个系统属性所表示的目录也不同
+			On Windows: java.io.tmpdir:[C:\DOCUME~1\user\LOCALS~1\Temp\]
+			On Solaris: java.io.tmpdir:[/var/tmp/]
+			On Linux: java.io.tmpdir: [/tmp]
+			On Mac OS X: java.io.tmpdir: [/tmp]
+	-->
+    <diskStore path="java.io.tmpdir"></diskStore>
+	<!--
+		name:cache唯一标识 必须是唯一的(ehcache会把这个cache放到HashMap里)。
+		maxElementsInMemory : 在內存中最大緩存的对象数量。
+		maxElementsOnDisk:在磁盘上缓存的element的最大数目，默认值为0，表示不限制。 
+		eternal：缓存是否永久有效   缓存的对象是否永远不变  缓存是否持久
+		maxElementsInMemory：内存中最大缓存对象数
+		overflowToDisk(true,false)：缓存对象达到最大数后，将缓存写到硬盘中, 内存满了，是否要缓存到硬盘。
+		diskPersistent：硬盘持久化
+		timeToIdleSeconds：缓存清除时间  可以操作对象的时间段。 当缓存闲置n秒后销毁 
+		timeToLiveSeconds：缓存存活时间  缓存中对象的生命周期，时间到后查询数据会从数据库中读取 当缓存存活n秒后销毁
+		memoryStoreEvictionPolicy：缓存清空策略
+		1.FIFO：first in first out 先进先出
+		2.LFU： Less Frequently Used 一直以来最少被使用的
+		3.LRU：Least Recently Used  最近最少使用的
+		diskExpiryThreadIntervalSeconds:对象检测线程运行时间间隔。标识对象状态的线程多长时间运行一次。
+		diskSpoolBufferSizeMB:DiskStore使用的磁盘大小，默认值30MB。每个cache使用各自的DiskStore。  
+	-->
+	<defaultCache maxElementsInMemory="1000" eternal="false" diskPersistent="true" diskExpiryThreadIntervalSeconds = "120" 
+		timeToIdleSeconds="120" timeToLiveSeconds="120" overflowToDisk="true" memoryStoreEvictionPolicy="LRU" />
+	
+	<!-- 该配置应该写，否则会出现警告，若不写等于没有用查询缓存 -->
+
+    <cache name="org.hibernate.cache.StandardQueryCache"   maxElementsInMemory="50" eternal="false" 
+		timeToIdleSeconds="3600"  timeToLiveSeconds="7200"  overflowToDisk="true"/>
+
+    <!-- 设置时间戳缓存的数据过期策略 -->
+ 	<!-- 该配置应该写，否则会出现警告，若不写等于没有用查询缓存 -->
+ 	<cache name="org.hibernate.cache.UpdateTimestampsCache"  maxElementsInMemory="5000"
+ 		eternal="true"  overflowToDisk="true"/>
+
+    <!-- 设置自定义命名查询缓存customerQueries的数据过期策略 -->
+	<!-- 该配置是自定义的查询缓存区域 -->
+	<!--   指定缓存的对象。 下面出现的的属性覆盖上面出现的，没出现的继承上面的。
+			
+		虽然按以上设置好了查询缓存，但Hibernate在执行查询语句语句时仍不会启用查询缓存。
+		对于希望启用查询缓存的查询语句，应该调用Query接口的setCacheeable(true)方法：
+		// 激活查询缓存
+		query.setCacheable(true);
+		
+		// 使用自定义的查询缓存区域,若不设置,则使用标准查询缓存区域
+		
+		query.setCacheRegion("userCache");
+	 -->
+	<cache name="userCache" eternal="false" maxElementsInMemory="1000"
+		overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="600"
+		timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" />
+		
+<!--  *.hbm.xml 
+			<?xml version="1.0" encoding='UTF-8'?>
+			<!DOCTYPE hibernate-mapping PUBLIC
+			 "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+			 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+			<hibernate-mapping>
+			   <class>
+			        设置该持久化类的二级缓存并发访问策略 read-only read-write nonstrict-read-write transactional
+			       <cache usage="read-write"/>    
+			   </class>
+			</hibernate-mapping>
+ -->
+</ehcache>
