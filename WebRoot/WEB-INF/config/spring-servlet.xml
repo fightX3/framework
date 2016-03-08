@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
 	xmlns:task="http://www.springframework.org/schema/task" xmlns:cache="http://www.springframework.org/schema/cache"
 	xmlns:p="http://www.springframework.org/schema/p"
-	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+	http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
     http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
     http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
@@ -16,7 +18,7 @@
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
 	
-	  <!-- 注解请求映射  -->
+	<!-- 注解请求映射  -->
     <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">        
         <property name="interceptors">
             <list>  
@@ -68,7 +70,33 @@
             </list>  
         </property>  
 	</bean>
-		 
+	
+	<!-- 全局异常配置 start -->     
+    <bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">  
+        <property name="exceptionMappings">  
+            <props>  
+           		<!-- 表示当抛出NumberFormatException的时候就返回名叫number的视图 -->
+                <prop key="java.lang.Exception">404.html</prop>  
+                <prop key="java.lang.Throwable">500.html</prop>   
+            </props>  
+        </property>  
+        <!-- 表示当抛出异常但没有在exceptionMappings里面找到对应的异常时 返回名叫exception的视图-->
+        <property name="defaultErrorView" value="500.html"/>
+        <!-- 设置日志输出warnLogCategory的对象WARN -->     
+        <property name="warnLogCategory" value="WARN"/>   
+        <!-- 定义在发生异常时视图跟返回码的对应关系 -->  
+        <property name="statusCodes">
+            <props>  
+            	<!-- 表示在发生NumberFormatException时返回视图number，然后这里定义发生异常时视图number对应的HttpServletResponse的返回码是500 -->
+                <prop key="java.lang.Exception">404</prop>  
+                <prop key="java.lang.Throwable">500</prop>  
+            </props>  
+        </property>  
+        <!-- 表示在发生异常时默认的HttpServletResponse的返回码是多少，默认是200 --> 
+        <property name="defaultStatusCode" value="404"/> 
+    </bean>     
+     <!-- 全局异常配置 end -->  
+     	 
 	<!-- 设置freeMarker的配置文件路径 -->
 	<bean id="freemarkerConfiguration"
 		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
