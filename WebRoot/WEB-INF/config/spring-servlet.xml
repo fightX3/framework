@@ -81,7 +81,7 @@
             </props>  
         </property>  
         <!-- 表示当抛出异常但没有在exceptionMappings里面找到对应的异常时 返回名叫exception的视图-->
-        <property name="defaultErrorView" value="500.html"/>
+        <property name="defaultErrorView" value="500.htm"/>
         <!-- 设置日志输出warnLogCategory的对象WARN -->     
         <property name="warnLogCategory" value="WARN"/>   
         <!-- 定义在发生异常时视图跟返回码的对应关系 -->  
@@ -108,7 +108,7 @@
 	<bean id="freemarkerConfig"
 		class="com.utils.freemarker.MyFreeMarkerConfig">
 		<property name="freemarkerSettings" ref="freemarkerConfiguration"/> 
-		<property name="templateLoaderPath"><value>/template/views/</value></property> 
+		<property name="templateLoaderPath"><value>/views/</value></property> 
 		<property name="freemarkerVariables">
 				<map><entry key="xml_escape" value-ref="fmXmlEscape" /></map>
 		</property>

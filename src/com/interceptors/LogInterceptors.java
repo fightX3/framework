@@ -11,15 +11,12 @@ import org.springframework.web.servlet.ModelAndView;
 public class LogInterceptors implements HandlerInterceptor  {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LogInterceptors.class);
-	public void afterCompletion(HttpServletRequest request,
-			HttpServletResponse response, Object handler, Exception ex)
-			throws Exception {
-		LOG.debug("请求完成以后执行。。。。{}",handler.getClass().getName());
-		if(ex != null){
-			throw ex;
-		}
-	}
 
+	public boolean preHandle(HttpServletRequest request,
+			HttpServletResponse response, Object handler) throws Exception {
+		LOG.debug("将要执行的方法。。。。[方法：{}]",handler.getClass().getName());
+		return true;
+	}
 	public void postHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
@@ -29,11 +26,13 @@ public class LogInterceptors implements HandlerInterceptor  {
 		}
 		LOG.debug("渲染视图之前执行。。。。[视图：{}]",modelAndView.getViewName());
 	}
-
-	public boolean preHandle(HttpServletRequest request,
-			HttpServletResponse response, Object handler) throws Exception {
-		LOG.debug("将要执行的方法。。。。[方法：{}]",handler.getClass().getName());
-		return true;
+	public void afterCompletion(HttpServletRequest request,
+			HttpServletResponse response, Object handler, Exception ex)
+			throws Exception {
+		LOG.debug("请求完成以后执行。。。。{}",handler.getClass().getName());
+		if(ex != null){
+			throw ex;
+		}
 	}
 
 }

@@ -1,6 +1,5 @@
 package com.test;
 
-
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -19,6 +18,11 @@ import com.alibaba.fastjson.JSON;
 @Controller("test")
 @RequestMapping(method={RequestMethod.GET,RequestMethod.POST})
 public class Test {
+		@RequestMapping("/admin/{page}")
+	    public ModelAndView login00(HttpServletRequest req,HttpServletResponse resp) throws IOException{
+			String uri = req.getRequestURI();
+	        return new ModelAndView(uri);
+	    }
 	 	@RequestMapping("/index")
 	    public void login0(HttpServletRequest req,HttpServletResponse resp) throws IOException{
 	 		resp.sendRedirect("/index.html");
